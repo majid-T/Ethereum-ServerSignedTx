@@ -2,5 +2,8 @@ extends layout
 
 block content
   h1= title
-  p Welcome to #{title}
-  p #{receipt}
+  p Welcome to out API
+  p Click on links below to call the API with dummy data
+  -var changUrl="./changeOwner?address=4"
+  p CLick for changing owner to 5th account on ganache #[a(href=changUrl) #{changUrl}]
+

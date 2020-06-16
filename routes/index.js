@@ -39,7 +39,37 @@ router.get("/", async function (req, res, next) {
   // A second address who you want to change the owner too
   const newAddress = "0x5427bedc03E5ffB8747A534d0C8F945631F4FC77";
 
-  res.render("index", { title: "Express" });
+  // Grabing Test contract from the network by ABI and address
+  let TestContract = new web3.eth.Contract(ABI, contractAddress);
+
+  // ABI encoding the function call
+  const _data = TestContract.methods.setOwner(newAddress).encodeABI();
+
+  //Grabing nonce which is count of transactions on the account specified
+  _nonce = await web3.eth.getTransactionCount(account);
+
+  // making the transaction json object - you can grab below info from your ganache console
+  let rawTx = {
+    nonce: _nonce,
+    gasPrice: "0x20000000000",
+    gasLimit: "0x27511",
+    to: contractAddress,
+    value: 0,
+    data: _data,
+  };
+
+  // Making a transaction object and signing it with the account private key
+  let tx = new Tx(rawTx);
+  tx.sign(privateKey);
+  var serializedTx = tx.serialize();
+
+  //Executing and Grabing the receipt of the transaction
+  var _receipt = await web3.eth.sendSignedTransaction(
+    "0x" + serializedTx.toString("hex")
+  );
+  console.log("Receipt: ", _receipt);
+
+  res.render("index", { title: "Express", receipt: JSON.stringify(_receipt) });
 });
 
 module.exports = router;

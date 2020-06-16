@@ -16,7 +16,28 @@ router.get("/", async function (req, res, next) {
 
   //Getting the account on the network
   var accounts = await web3.eth.getAccounts();
-  console.log("Accounts:", accounts);
+  console.log("Accounts on Ganache:", accounts);
+
+  // Getting addresses and keys from ganache network
+  // These vairables will vary on each deployment so make sure to use your own addresses and keys
+
+  // Import ABI which you will get after compiling - here from Remix
+  const ABI = require("./contractAbi.json");
+
+  // Deploy on ganache first and grab it from there
+  const contractAddress = "0xfe2Fca6b9e2358840CeC8849dB0064a6539B8941";
+
+  // Since we uses a require on contract for only owner, make sure to grab the deployer address here
+  const account = "0x9416BE1747f767C504B6D41Cebbeac1E0BBC746e";
+
+  // Private key for the above account
+  const privateKey = Buffer.from(
+    "992c22d78677b2e6a65acbe74d7e741ba64c8ce99efed34fa408a29f74d84d9b",
+    "hex"
+  );
+
+  // A second address who you want to change the owner too
+  const newAddress = "0x5427bedc03E5ffB8747A534d0C8F945631F4FC77";
 
   res.render("index", { title: "Express" });
 });
